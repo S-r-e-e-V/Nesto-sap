@@ -1,24 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import { ChakraProvider } from "@chakra-ui/react";
+import { AuthContextProvider } from "./context/AuthContext";
+import RootRoute from "./routes/RootRoute";
+import { versionString } from "./api";
 
 function App() {
+  console.log(versionString);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ChakraProvider>
+      <AuthContextProvider>
+        <RootRoute />
+      </AuthContextProvider>
+    </ChakraProvider>
   );
 }
 
