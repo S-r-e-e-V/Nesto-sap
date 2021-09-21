@@ -29,7 +29,7 @@ import isToday from "dayjs/plugin/isToday";
 import { OrderListTableHead } from "../components/TableHeads";
 import OrderTable from "../containers/OrderTable";
 
-import { postSapcarOrders, getStores } from "../api";
+import { postSapcarOrders, getStores, postreturnOrders } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
 
 function SapCar(props) {
@@ -37,7 +37,7 @@ function SapCar(props) {
 
   const [isViewIcon, setIsViewIcon] = useState(true);
   const [page, setPage] = useState(1);
-  const [reload, setreload] = useState(false)
+  const [reload, setreload] = useState(false);
   const [startLimit, setstartLimit] = useState(0);
   const [endLimit, setendLimit] = useState(10);
   const [selectedSite, setselectedSite] = useState("8042");
@@ -74,23 +74,47 @@ function SapCar(props) {
   }, []);
   const getOrders = async () => {
     setemptyLoading(true);
-    let payload = {
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      sales_invoice_failed:
-        selectedTable === "sales_invoice_failed" ? true : false,
-      reservation_failed: selectedTable === "reservation_failed" ? true : false,
-      searchTerm: searchFilter,
-      site_id: selectedSite,
-    };
-    const response = await postSapcarOrders(payload, startLimit, endLimit);
+    let payload =
+      selectedTable === "return_orders"
+        ? {
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+            sales_invoice_failed:
+              selectedTable === "sales_invoice_failed" ? true : false,
+            reservation_failed:
+              selectedTable === "reservation_failed" ? true : false,
+            searchTerm: searchFilter,
+            store_id: selectedSite,
+          }
+        : {
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+            sales_invoice_failed:
+              selectedTable === "sales_invoice_failed" ? true : false,
+            reservation_failed:
+              selectedTable === "reservation_failed" ? true : false,
+            searchTerm: searchFilter,
+            site_id: selectedSite,
+          };
+    const response =
+      selectedTable === "return_orders"
+        ? await postreturnOrders(payload, startLimit, endLimit)
+        : await postSapcarOrders(payload, startLimit, endLimit);
     setemptyLoading(false);
     setorders(response);
   };
   console.log(orders);
   useEffect(() => {
     getOrders();
-  }, [page, selectedSite, selectedTable, searchFilter, startDate, endDate,reload]);
+  }, [
+    page,
+    selectedSite,
+    selectedTable,
+    searchFilter,
+    startDate,
+    endDate,
+    reload,
+  ]);
 
   //   const errorToast = (error) =>
   //     toast({
@@ -170,6 +194,9 @@ function SapCar(props) {
           </option>
           <option value="sales_invoice_failed" key="sales_invoice_failed">
             Sales Invoice Failed
+          </option>
+          <option value="return_orders" key="return_orders">
+            Return Orders
           </option>
         </Select>
         <Box my="10px" mr="20px">

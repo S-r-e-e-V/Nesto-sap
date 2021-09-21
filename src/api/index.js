@@ -31,6 +31,10 @@ export const postSapcarOrders = async (PAYLOAD, startLimit, endLimit) => {
   const URL = `${API_BASE_URL}/sap-car/orders/list?startLimit=${startLimit}&endLimit=${endLimit}`;
   return post(URL, PAYLOAD, true);
 };
+export const postreturnOrders = async (PAYLOAD, startLimit, endLimit) => {
+  const URL = `${API_BASE_URL}/sap-console/return/list?startLimit=${startLimit}&endLimit=${endLimit}`;
+  return post(URL, PAYLOAD, true);
+};
 export const postretryFailed = async (PAYLOAD, ID) => {
   const URL = `${API_BASE_URL}/sap-console/retry/${ID}`;
   return post(URL, PAYLOAD, true, true);
