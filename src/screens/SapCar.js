@@ -26,8 +26,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import dayjs from "dayjs";
 import isToday from "dayjs/plugin/isToday";
 
-import { OrderListTableHead } from "../components/TableHeads";
+import {
+  OrderListTableHead,
+  ReturnListTableHead,
+} from "../components/TableHeads";
 import OrderTable from "../containers/OrderTable";
+import ReturnOrderTable from "../containers/ReturnOrderTable";
 
 import { postSapcarOrders, getStores, postreturnOrders } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
@@ -146,7 +150,7 @@ function SapCar(props) {
       {/* <Center> */}
       <Box width="185px" mr="20px" my="10px">
         <Badge variant="subtle" fontSize="16px" colorScheme="blue">
-          SAP CAR
+          Orders
         </Badge>
       </Box>
       {/* </Center> */}
@@ -317,18 +321,25 @@ function SapCar(props) {
         </PopoverContent>
       </Popover> */}
       <Flex overflowX="auto">
-        <Table variant="simple" size="sm">
-          <TableCaption placement={"top"}>
-            {/* Sales Report */}
-            {/* {showTableCaption ? tableCaption : ""} */}
-          </TableCaption>
-          <OrderListTableHead />
-          <OrderTable
-            data={orders.orderList ?? []}
-            emptyLoading={emptyLoading}
-            setreload={setreload}
-          />
-        </Table>
+        {selectedTable === "return_orders" ? (
+          <Table variant="simple" size="sm">
+            <ReturnListTableHead />
+            <ReturnOrderTable
+              data={orders.orderList ?? []}
+              emptyLoading={emptyLoading}
+              setreload={setreload}
+            />
+          </Table>
+        ) : (
+          <Table variant="simple" size="sm">
+            <OrderListTableHead />
+            <OrderTable
+              data={orders.orderList ?? []}
+              emptyLoading={emptyLoading}
+              setreload={setreload}
+            />
+          </Table>
+        )}
       </Flex>
       {!emptyLoading && (
         <PageSwitcher

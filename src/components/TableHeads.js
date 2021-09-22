@@ -25,3 +25,32 @@ export const OrderListTableHead = () => (
     </Tr>
   </Thead>
 );
+
+export const ReturnListTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>Order ID</Th>
+      <Th>Magento Order Id</Th>
+      <Th>Customer Id</Th>
+      <Th>Sap Store Id</Th>
+      <Th>Currency Code</Th>
+      <Th>Payment Method</Th>
+      <Th>Delivery Date</Th>
+      <Th>Coupon Code</Th>
+      <Th>Grand Total</Th>
+      <Th>Discount Amount</Th>
+      <Th>Returns</Th>
+    </Tr>
+  </Thead>
+);
+
+export const OrderItemsTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>Id</Th>
+      <Th>Car Order Id</Th>
+      <Th>Return Invoiced</Th>
+      <Th>Invoiced Returned Date</Th>
+    </Tr>
+  </Thead>
+);
