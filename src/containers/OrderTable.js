@@ -25,7 +25,7 @@ dayjs.extend(UTC);
 // import ItemsTotal from "./ItemsTotal";
 // import OrderDetails from "./OrderDetails";
 
-const SalesSummaryTable = ({ emptyLoading, data,setreload }) => {
+const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
@@ -34,8 +34,8 @@ const SalesSummaryTable = ({ emptyLoading, data,setreload }) => {
       type: type,
     };
     const response = await postretryFailed(payload, id);
-    if(response?.success===true){
-      setreload(reload=>!reload)
+    if (response?.success === true) {
+      setreload((reload) => !reload);
     }
     toast({
       // title: "Failed to generate report",
@@ -109,16 +109,17 @@ const SalesSummaryTable = ({ emptyLoading, data,setreload }) => {
                 </Td>
                 <Td minWidth={200}>
                   <Text>
-                    {item?.order_start_time.split("T")[0] +
+                    {item?.order_start_time?.split("T")[0] +
                       "  " +
-                      item?.order_start_time.split("T")[1].split(".")[0] ?? "-"}
+                      item?.order_start_time?.split("T")[1].split(".")[0] ??
+                      "-"}
                   </Text>
                 </Td>
                 <Td minWidth={200}>
                   <Text>
-                    {item?.order_end_time.split("T")[0] +
+                    {item?.order_end_time?.split("T")[0] +
                       "  " +
-                      item?.order_end_time.split("T")[1].split(".")[0] ?? "-"}
+                      item?.order_end_time?.split("T")[1].split(".")[0] ?? "-"}
                   </Text>
                 </Td>
                 <Td minWidth={100}>
@@ -178,14 +179,14 @@ const SalesSummaryTable = ({ emptyLoading, data,setreload }) => {
                     </PopoverContent>
                   </Popover> */}
                   <Badge
-                  cursor="pointer"
+                    cursor="pointer"
                     colorScheme="purple"
-                    onClick={() => viewJson("sales", item?.sales_order_id)}
+                    onClick={() => viewJson("sale", item?.sales_order_id)}
                   >
                     Sales
                   </Badge>
                   <Badge
-                  cursor="pointer"
+                    cursor="pointer"
                     colorScheme="yellow"
                     onClick={() =>
                       viewJson("reservation", item?.sales_order_id)
@@ -199,7 +200,7 @@ const SalesSummaryTable = ({ emptyLoading, data,setreload }) => {
                     <Badge
                       cursor="pointer"
                       colorScheme="purple"
-                      onClick={() => retryFailed("sales", item?.sales_order_id)}
+                      onClick={() => retryFailed("sale", item?.sales_order_id)}
                     >
                       Retry sales Invoice Failed
                     </Badge>

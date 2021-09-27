@@ -18,12 +18,16 @@ import {
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
-import { OrderItemsTableHead } from "../components/TableHeads";
+import {
+  OrderItemsTableHead,
+  ReturnsTableHead,
+} from "../components/TableHeads";
 import ReturnItemsTable from "../containers/ReturnItemsTable";
 import { ReturnListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
+import CarOrderItems from "./CarOrderItemsTable";
 dayjs.extend(UTC);
 // import MapsLink from "../components/MapsLink";
 // import ItemsTotal from "./ItemsTotal";
@@ -34,6 +38,7 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
   const [isopenOrderItems, setisopenOrderItems] = useState(false);
+  const [isopenReturns, setisopenReturns] = useState(false);
   const [OrderItems, setOrderItems] = useState();
   let order = {
     car_order_items: [
@@ -84,6 +89,7 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
   const onClose = () => {
     setisOpen(false);
     setisopenOrderItems(false);
+    setisopenReturns(false);
   };
   return (
     <>
@@ -124,13 +130,29 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
                   <Text>{item?.discount_amount ?? "-"}</Text>
                 </Td>
                 <Td minWidth={150}>
-                  {item?.returns ? (
+                  {item?.car_order_items?.length > 0 ? (
                     <Badge
                       cursor="pointer"
                       colorScheme="green"
                       onClick={() => {
                         setOrderItems(item);
                         setisopenOrderItems(true);
+                      }}
+                    >
+                      View Items
+                    </Badge>
+                  ) : (
+                    <Badge colorScheme="red">Nil</Badge>
+                  )}
+                </Td>
+                <Td minWidth={150}>
+                  {item?.returns?.length > 0 ? (
+                    <Badge
+                      cursor="pointer"
+                      colorScheme="green"
+                      onClick={() => {
+                        setOrderItems(item);
+                        setisopenReturns(true);
                       }}
                     >
                       View Returns
@@ -144,7 +166,7 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
                   <Badge
                     cursor="pointer"
                     colorScheme="purple"
-                    onClick={() => viewJson("return", item?.id)}
+                    onClick={() => viewJson("return", item?.magento_order_id)}
                   >
                     Return
                   </Badge>
@@ -194,11 +216,11 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
             </ModalContent>
           </Modal>
           <Modal
-            isOpen={isopenOrderItems}
+            isOpen={isopenReturns}
             onClose={onClose}
             scrollBehavior="inside"
             isCentered
-            size="lg"
+            size="full"
           >
             <ModalOverlay />
             <ModalContent>
@@ -206,8 +228,29 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
               <ModalCloseButton />
               <ModalBody>
                 <Table variant="simple" size="sm">
+                  <ReturnsTableHead />
+                  <ReturnItemsTable data={OrderItems?.returns ?? []} />
+                </Table>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          <Modal
+            isOpen={isopenOrderItems}
+            onClose={onClose}
+            scrollBehavior="inside"
+            isCentered
+            size="full"
+          >
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader textTransform="capitalize">
+                Car Order Items
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Table variant="simple" size="sm">
                   <OrderItemsTableHead />
-                  <ReturnItemsTable data={OrderItems.returns ?? []} />
+                  <CarOrderItems data={OrderItems?.car_order_items ?? []} />
                 </Table>
               </ModalBody>
             </ModalContent>

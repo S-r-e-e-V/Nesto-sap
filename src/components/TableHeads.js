@@ -39,7 +39,19 @@ export const ReturnListTableHead = () => (
       <Th>Coupon Code</Th>
       <Th>Grand Total</Th>
       <Th>Discount Amount</Th>
+      <Th>Car Order Items</Th>
       <Th>Returns</Th>
+    </Tr>
+  </Thead>
+);
+
+export const ReturnsTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>Id</Th>
+      <Th>Car Order Id</Th>
+      <Th>Return Invoiced</Th>
+      <Th>Invoiced Returned Date</Th>
     </Tr>
   </Thead>
 );
@@ -48,9 +60,15 @@ export const OrderItemsTableHead = () => (
   <Thead>
     <Tr>
       <Th>Id</Th>
+      <Th>Item Id</Th>
       <Th>Car Order Id</Th>
-      <Th>Return Invoiced</Th>
-      <Th>Invoiced Returned Date</Th>
+      <Th>Article Number</Th>
+      <Th>Quantity</Th>
+      <Th>Quantity Returned</Th>
+      <Th>Unit of Measurement</Th>
+      <Th>Price</Th>
+      <Th>Tax</Th>
+      <Th>Tax Code</Th>
     </Tr>
   </Thead>
 );

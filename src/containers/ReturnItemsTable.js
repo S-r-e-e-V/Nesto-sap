@@ -1,14 +1,4 @@
-import { Tbody, Td, Text, Tr, useToast, Badge } from "@chakra-ui/react"; //Table Imports
-import { useState } from "react";
-import { OrderListSkeleton } from "../components/TableSkeletons";
-import { getJson, postretryFailed } from "../api";
-import dayjs from "dayjs";
-import UTC from "dayjs/plugin/utc";
-dayjs.extend(UTC);
-// import MapsLink from "../components/MapsLink";
-// import ItemsTotal from "./ItemsTotal";
-// import OrderDetails from "./OrderDetails";
-
+import { Tbody, Td, Text, Tr } from "@chakra-ui/react"; //Table Imports
 const ReturnItemsTable = ({ data }) => {
   return (
     <>
@@ -28,10 +18,10 @@ const ReturnItemsTable = ({ data }) => {
                 </Td>
                 <Td minWidth={100}>
                   <Text>
-                    {item?.return_invoiced_timestamp.split("T")[0] +
+                    {item?.return_invoiced_timestamp?.split("T")[0] +
                       "  " +
                       item?.return_invoiced_timestamp
-                        .split("T")[1]
+                        ?.split("T")[1]
                         .split(".")[0] ?? "-"}
                   </Text>
                 </Td>
