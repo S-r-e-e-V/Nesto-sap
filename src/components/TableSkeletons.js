@@ -10,6 +10,7 @@ import {
   Stack,
 } from "@chakra-ui/react"; //Table Imports
 
+// delete 🗑
 const OrderListSkeleton = () => (
   <Tbody>
     {[1, 2, 3].map((i) => (
@@ -85,24 +86,79 @@ const ReturnListSkeleton = () => (
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
-        <Td minWidth={200}>
-          <Skeleton height="25px" />
-        </Td>
-        <Td minWidth={200}>
-          <Skeleton height="25px" />
-        </Td>
-        <Td minWidth={200}>
-          <Skeleton height="25px" />
-        </Td>
-        <Td minWidth={200}>
-          <Skeleton height="25px" />
-        </Td>
-        <Td minWidth={200}>
+        <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+      </Tr>
+    ))}
+  </Tbody>
+);
+const ReservationListSkeleton = () => (
+  <Tbody>
+    {[1, 2, 3].map((i) => (
+      <Tr key={i}>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+      </Tr>
+    ))}
+  </Tbody>
+);
+const SalesListSkeleton = () => (
+  <Tbody>
+    {[1, 2, 3].map((i) => (
+      <Tr key={i}>
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
@@ -140,4 +196,9 @@ const ReturnListSkeleton = () => (
     ))}
   </Tbody>
 );
-export { OrderListSkeleton, ReturnListSkeleton };
+export {
+  OrderListSkeleton,
+  ReturnListSkeleton,
+  ReservationListSkeleton,
+  SalesListSkeleton,
+};

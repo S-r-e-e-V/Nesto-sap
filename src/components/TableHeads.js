@@ -1,5 +1,5 @@
 import { Thead, Tr, Th } from "@chakra-ui/react"; //Table Imports
-
+// delete 🗑
 export const OrderListTableHead = () => (
   <Thead>
     <Tr>
@@ -25,7 +25,7 @@ export const OrderListTableHead = () => (
     </Tr>
   </Thead>
 );
-
+// delete 🗑
 export const ReturnListTableHead = () => (
   <Thead>
     <Tr>
@@ -44,18 +44,58 @@ export const ReturnListTableHead = () => (
     </Tr>
   </Thead>
 );
-
+export const SalesTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>Id</Th>
+      <Th>Increment Id</Th>
+      <Th>Order Id</Th>
+      <Th>Sap Car Order Id</Th>
+      <Th>Customer Id</Th>
+      <Th>Sales Invoiced</Th>
+      <Th>Sales Invoiced Time</Th>
+      <Th>Reservation Status</Th>
+      <Th>Grand Total</Th>
+      <Th>Json</Th>
+      <Th>Sales Invoice Failed</Th>
+    </Tr>
+  </Thead>
+);
 export const ReturnsTableHead = () => (
   <Thead>
     <Tr>
       <Th>Id</Th>
-      <Th>Car Order Id</Th>
+      <Th>Increment Id</Th>
+      <Th>Order Id</Th>
+      <Th>Sap Car Order Id</Th>
+      <Th>Customer Id</Th>
       <Th>Return Invoiced</Th>
-      <Th>Invoiced Returned Date</Th>
+      <Th>Return Invoiced Time</Th>
+      <Th>Reservation Status</Th>
+      <Th>Grand Total</Th>
+      <Th>Json</Th>
+      <Th>Return Failed</Th>
     </Tr>
   </Thead>
 );
 
+export const ReservationTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>Reservation Id</Th>
+      <Th>Increment Id</Th>
+      <Th>Order Id</Th>
+      <Th>Sap Car Order Id</Th>
+      <Th>Customer Id</Th>
+      <Th>Reservation Type</Th>
+      <Th>Reservation Status</Th>
+      <Th>Grand Total</Th>
+      <Th>Json</Th>
+      <Th>Reservation Failed</Th>
+    </Tr>
+  </Thead>
+);
+// delete 🗑
 export const OrderItemsTableHead = () => (
   <Thead>
     <Tr>

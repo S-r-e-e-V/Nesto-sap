@@ -6,6 +6,10 @@ import SapCar from "../screens/SapCar";
 
 import { AuthContext } from "../context/AuthContext";
 import Login from "../screens/Login";
+import Home from "../screens/Home";
+import Returns from "../screens/Returns";
+import Sales from "../screens/Sales";
+import Reservation from "../screens/Reservation";
 
 const RootRoute = () => {
   const { isLoggedIn, checkAuthState } = useContext(AuthContext);
@@ -21,7 +25,12 @@ const RootRoute = () => {
       <Header />
       <Box px="25px" pt="80px" pb="40px">
         {isLoggedIn ? (
-          <Route exact path="/" component={SapCar} />
+          <>
+            <Route exact path="/sales" component={Sales} />
+            <Route exact path="/reservation" component={Reservation} />
+            <Route exact path="/returns" component={Returns} />
+            <Route exact path="/" component={Home} />
+          </>
         ) : (
           <Switch>
             <Route component={Login} />

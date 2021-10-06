@@ -23,7 +23,7 @@ import {
   ReturnsTableHead,
 } from "../components/TableHeads";
 import ReturnItemsTable from "../containers/ReturnItemsTable";
-import { ReturnListSkeleton } from "../components/TableSkeletons";
+import { SalesListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
@@ -34,7 +34,7 @@ dayjs.extend(UTC);
 // import ItemsTotal from "./ItemsTotal";
 // import OrderDetails from "./OrderDetails";
 
-const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
+const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
@@ -87,7 +87,7 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   };
   return (
     <>
-      {emptyLoading && <ReturnListSkeleton />}
+      {emptyLoading && <SalesListSkeleton />}
       {!emptyLoading && data && (
         <Tbody>
           {data.map((item, index) => {
@@ -109,13 +109,13 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                   <Text>{item?.car_order?.customer_id ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text>{item?.return_invoiced ?? "-"}</Text>
+                  <Text>{item?.sales_invoiced ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
                   <Text>
-                    {item?.return_invoiced_timestamp?.split("T")[0] +
+                    {item?.sales_invoiced_timestamp?.split("T")[0] +
                       "  " +
-                      item?.return_invoiced_timestamp
+                      item?.sales_invoiced_timestamp
                         ?.split("T")[1]
                         .split(".")[0] ?? "-"}
                   </Text>
@@ -134,18 +134,18 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                   <Badge
                     cursor="pointer"
                     colorScheme="purple"
-                    onClick={() => viewJson("return", item?.id)}
+                    onClick={() => viewJson("sale", item?.id)}
                   >
                     View
                   </Badge>
                 </Td>
                 <Td minWidth={100}>
-                  {item?.return_failed ? (
+                  {item?.sales_invoice_failed ? (
                     <Badge
                       cursor="pointer"
                       colorScheme="green"
                       onClick={() =>
-                        retryFailed("return", item?.car_order?.magento_order_id)
+                        retryFailed("sale", item?.car_order?.magento_order_id)
                       }
                     >
                       Retry
@@ -253,4 +253,4 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   );
 };
 
-export default ReturnOrderTable;
+export default SalesOrderTable;

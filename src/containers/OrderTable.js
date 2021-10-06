@@ -25,7 +25,7 @@ dayjs.extend(UTC);
 // import ItemsTotal from "./ItemsTotal";
 // import OrderDetails from "./OrderDetails";
 
-const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
+const OrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
@@ -252,4 +252,4 @@ const SalesSummaryTable = ({ emptyLoading, data, setreload }) => {
   );
 };
 
-export default SalesSummaryTable;
+export default OrderTable;

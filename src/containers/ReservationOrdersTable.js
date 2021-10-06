@@ -18,29 +18,20 @@ import {
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
-import {
-  OrderItemsTableHead,
-  ReturnsTableHead,
-} from "../components/TableHeads";
-import ReturnItemsTable from "../containers/ReturnItemsTable";
-import { ReturnListSkeleton } from "../components/TableSkeletons";
+import ReservationStatus from "../utils/reservationStatus";
+import { ReservationListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
-import CarOrderItems from "./CarOrderItemsTable";
-import ReservationStatus from "../utils/reservationStatus";
 dayjs.extend(UTC);
 // import MapsLink from "../components/MapsLink";
 // import ItemsTotal from "./ItemsTotal";
 // import OrderDetails from "./OrderDetails";
 
-const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
+const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
-  // const [isopenOrderItems, setisopenOrderItems] = useState(false);
-  // const [isopenReturns, setisopenReturns] = useState(false);
-  // const [OrderItems, setOrderItems] = useState();
   const retryFailed = async (type, id) => {
     let payload = {
       type: type,
@@ -82,12 +73,10 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   };
   const onClose = () => {
     setisOpen(false);
-    // setisopenOrderItems(false);
-    // setisopenReturns(false);
   };
   return (
     <>
-      {emptyLoading && <ReturnListSkeleton />}
+      {emptyLoading && <ReservationListSkeleton />}
       {!emptyLoading && data && (
         <Tbody>
           {data.map((item, index) => {
@@ -109,43 +98,35 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                   <Text>{item?.car_order?.customer_id ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text>{item?.return_invoiced ?? "-"}</Text>
-                </Td>
-                <Td minWidth={100}>
-                  <Text>
-                    {item?.return_invoiced_timestamp?.split("T")[0] +
-                      "  " +
-                      item?.return_invoiced_timestamp
-                        ?.split("T")[1]
-                        .split(".")[0] ?? "-"}
-                  </Text>
+                  <Text>{item?.reservation_type ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
                   <Text>
                     {ReservationStatus(item?.car_order?.reservation_status)}
                   </Text>
-                  {/* <Text>{item?.car_order?.reservation_status ?? "-"}</Text> */}
                 </Td>
                 <Td minWidth={100}>
                   <Text>{item?.car_order?.grand_total ?? "-"}</Text>
                 </Td>
-
                 <Td minWidth={100}>
                   <Badge
                     cursor="pointer"
                     colorScheme="purple"
-                    onClick={() => viewJson("return", item?.id)}
+                    onClick={() => viewJson("reservation", item?.id)}
                   >
                     View
                   </Badge>
                 </Td>
                 <Td minWidth={100}>
-                  {item?.return_failed ? (
+                  {item?.reservation_failed ? (
                     <Badge
                       cursor="pointer"
                       colorScheme="green"
                       onClick={() =>
-                        retryFailed("return", item?.car_order?.magento_order_id)
+                        retryFailed(
+                          "reservation",
+                          item?.car_order?.magento_order_id
+                        )
                       }
                     >
                       Retry
@@ -158,11 +139,11 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
             );
           })}
           <Modal
-            size="xl"
             isOpen={isOpen}
             onClose={onClose}
             scrollBehavior="inside"
             isCentered
+            size="xl"
           >
             <ModalOverlay />
             <ModalContent>
@@ -207,50 +188,10 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
               </ModalBody>
             </ModalContent>
           </Modal>
-          {/* <Modal
-            isOpen={isopenReturns}
-            onClose={onClose}
-            scrollBehavior="inside"
-            isCentered
-            size="full"
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader textTransform="capitalize">Returns</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Table variant="simple" size="sm">
-                  <ReturnsTableHead />
-                  <ReturnItemsTable data={OrderItems?.returns ?? []} />
-                </Table>
-              </ModalBody>
-            </ModalContent>
-          </Modal> */}
-          {/* <Modal
-            isOpen={isopenOrderItems}
-            onClose={onClose}
-            scrollBehavior="inside"
-            isCentered
-            size="full"
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader textTransform="capitalize">
-                Car Order Items
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Table variant="simple" size="sm">
-                  <OrderItemsTableHead />
-                  <CarOrderItems data={OrderItems?.car_order_items ?? []} />
-                </Table>
-              </ModalBody>
-            </ModalContent>
-          </Modal> */}
         </Tbody>
       )}
     </>
   );
 };
 
-export default ReturnOrderTable;
+export default ReservationOrderTable;

@@ -79,6 +79,9 @@ const post = async (
       return result.data.data;
     }
   } catch (e) {
+    if (e.response.status === 400) {
+      return { status: e.response.status, message: e?.response?.data?.message };
+    }
     networkErrorLogger(e);
   }
 };
