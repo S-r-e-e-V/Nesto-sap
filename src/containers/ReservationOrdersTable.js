@@ -18,6 +18,7 @@ import {
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
+import ReservationStatusKey from "../utils/reservationStatusKey";
 import ReservationStatus from "../utils/reservationStatus";
 import { ReservationListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
@@ -32,9 +33,11 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
-  const retryFailed = async (type, id) => {
+  const retryFailed = async (type, action, status, id) => {
     let payload = {
       type: type,
+      action: action,
+      status: ReservationStatusKey(status),
     };
     const response = await postretryFailed(payload, id);
     if (response?.success === true) {
@@ -125,6 +128,8 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                       onClick={() =>
                         retryFailed(
                           "reservation",
+                          item?.reservation_type.toUpperCase(),
+                          item?.car_order?.reservation_status,
                           item?.car_order?.magento_order_id
                         )
                       }
