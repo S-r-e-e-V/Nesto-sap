@@ -51,9 +51,7 @@ function Sales(props) {
       try {
         const sites = await getStores();
         if (sites) {
-          const parsedSites = JSON.parse(sites);
-          const siteArray = Object.values(parsedSites);
-          setSites(siteArray);
+          setSites(Object.values(sites));
         }
       } catch (e) {
         console.log(e);

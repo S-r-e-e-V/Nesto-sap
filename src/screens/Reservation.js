@@ -52,9 +52,7 @@ function Reservation(props) {
       try {
         const sites = await getStores();
         if (sites) {
-          const parsedSites = JSON.parse(sites);
-          const siteArray = Object.values(parsedSites);
-          setSites(siteArray);
+          setSites(Object.values(sites));
         }
       } catch (e) {
         console.log(e);
@@ -70,8 +68,6 @@ function Reservation(props) {
     let payload = {
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      //   sales_invoice_failed:
-      // selectedTable === "sales_invoice_failed" ? true : false,
       reservation_type: selectedTable === "" ? [] : [selectedTable],
       reservation_failed: reservationFailed === "true" ? true : false,
       searchTerm: searchFilter,

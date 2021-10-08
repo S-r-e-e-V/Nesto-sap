@@ -10,15 +10,12 @@ import { getStores } from "../api";
 const Home = () => {
   const [sites, setSites] = useState([]);
   const history = useHistory();
-  console.log();
   useEffect(() => {
     const loadSites = async () => {
       try {
         const sites = await getStores();
         if (sites) {
-          const parsedSites = JSON.parse(sites);
-          const siteArray = Object.values(parsedSites);
-          setSites(siteArray);
+          setSites(Object.values(sites));
         }
       } catch (e) {
         console.log(e);
@@ -29,7 +26,6 @@ const Home = () => {
     loadSites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const viewReport = (url, selectID, id) => {
     history.push(`${url}?id=${id}`);
   };

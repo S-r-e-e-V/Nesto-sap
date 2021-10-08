@@ -22,8 +22,8 @@ export const login = (PAYLOAD) => {
   return post(URL, PAYLOAD, false);
 };
 export const getStores = async () => {
-  const URL = `${MAGENTO_BASE_URL}/nestoWebsites`;
-  return get(URL, false, true);
+  const URL = `${API_BASE_URL}/mis/sites`;
+  return get(URL, false, false);
 };
 //delete 🗑
 export const postSapcarOrders = async (PAYLOAD, startLimit, endLimit) => {

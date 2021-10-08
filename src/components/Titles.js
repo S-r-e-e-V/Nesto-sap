@@ -1,12 +1,4 @@
-import {
-  Flex,
-  useToast,
-  Box,
-  Text,
-  Button,
-  Select,
-  Icon,
-} from "@chakra-ui/react";
+import { Flex, Box, Text, Button, Select, Icon } from "@chakra-ui/react";
 import { FcDocument } from "react-icons/fc";
 import { useState } from "react";
 
@@ -14,7 +6,6 @@ const Title = ({ sites, getSelectedID, reportName, selectID, url }) => {
   const [selectedSite, setSelectedSite] = useState(
     selectID === "website_id" ? 8042 : 1
   );
-
   const viewReport = () => {
     getSelectedID(url, selectID, selectedSite);
   };
@@ -53,12 +44,12 @@ const Title = ({ sites, getSelectedID, reportName, selectID, url }) => {
                     value={
                       selectID === "website_id"
                         ? site.sap_website_id
-                        : site.default_store_id
+                        : site.website_id
                     }
                     key={
                       selectID === "website_id"
                         ? site.sap_website_id
-                        : site.default_store_id
+                        : site.website_id
                     }
                   >
                     Site:&nbsp;{site?.sap_website_id}
