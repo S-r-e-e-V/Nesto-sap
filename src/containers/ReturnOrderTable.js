@@ -9,38 +9,24 @@ import {
   ModalOverlay,
   ModalBody,
   ModalCloseButton,
-  ModalFooter,
   ModalContent,
   ModalHeader,
-  Button,
   Flex,
-  Table,
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
-import {
-  OrderItemsTableHead,
-  ReturnsTableHead,
-} from "../components/TableHeads";
-import ReturnItemsTable from "../containers/ReturnItemsTable";
 import { ReturnListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
-import CarOrderItems from "./CarOrderItemsTable";
 import ReservationStatus from "../utils/reservationStatus";
+import redirectToMagento from "../utils/redirectToMagento";
 dayjs.extend(UTC);
-// import MapsLink from "../components/MapsLink";
-// import ItemsTotal from "./ItemsTotal";
-// import OrderDetails from "./OrderDetails";
 
 const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
-  // const [isopenOrderItems, setisopenOrderItems] = useState(false);
-  // const [isopenReturns, setisopenReturns] = useState(false);
-  // const [OrderItems, setOrderItems] = useState();
   const retryFailed = async (type, id) => {
     let payload = {
       type: type,
@@ -82,8 +68,6 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   };
   const onClose = () => {
     setisOpen(false);
-    // setisopenOrderItems(false);
-    // setisopenReturns(false);
   };
   return (
     <>
@@ -93,31 +77,45 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
           {data.map((item, index) => {
             return (
               <Tr key={`${index}`}>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>{item?.id}</Text>
+                </Td> */}
+                <Td minWidth={200}>
+                  <Text>
+                    {`${
+                      dayjs(item?.request_timestamp)
+                        .local()
+                        .format("DD/MM/YY") ?? "-"
+                    }`}
+                  </Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text>{item?.car_order?.increment_id ?? "-"}</Text>
+                  <Text
+                    cursor="pointer"
+                    onClick={() =>
+                      redirectToMagento(item?.car_order?.magento_order_id)
+                    }
+                  >
+                    {item?.car_order?.increment_id ?? "-"}
+                  </Text>
                 </Td>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>{item?.car_order?.magento_order_id ?? "-"}</Text>
+                </Td> */}
+                <Td minWidth={200}>
+                  <Text>{item?.car_order?.reservation_guid ?? "-"}</Text>
                 </Td>
-                <Td minWidth={100}>
-                  <Text>{item?.carOrderId ?? "-"}</Text>
-                </Td>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>{item?.car_order?.customer_id ?? "-"}</Text>
-                </Td>
+                </Td> */}
                 <Td minWidth={100}>
                   <Text>{item?.return_invoiced ?? "-"}</Text>
                 </Td>
-                <Td minWidth={100}>
+                <Td minWidth={200}>
                   <Text>
-                    {item?.return_invoiced_timestamp?.split("T")[0] +
-                      "  " +
-                      item?.return_invoiced_timestamp
-                        ?.split("T")[1]
-                        .split(".")[0] ?? "-"}
+                    {dayjs(item?.return_invoiced_timestamp)
+                      .local()
+                      .format("DD/MM/YY H:mm:ss A") ?? "-"}
                   </Text>
                 </Td>
                 <Td minWidth={100}>
@@ -128,6 +126,9 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                 </Td>
                 <Td minWidth={100}>
                   <Text>{item?.car_order?.grand_total ?? "-"}</Text>
+                </Td>
+                <Td minWidth={100}>
+                  <Text>{item?.return_items_total ?? "-"}</Text>
                 </Td>
 
                 <Td minWidth={100}>
@@ -177,11 +178,9 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                     Request&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.request_timestamp?.split("T")[0] +
-                          "  " +
-                          JsonContent?.request_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                        dayjs(JsonContent?.request_timestamp)
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>
@@ -194,11 +193,9 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                     Response&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.response_timestamp?.split("T")[0] +
-                          "  " +
-                          JsonContent?.response_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                        dayjs(JsonContent?.response_timestamp)
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>

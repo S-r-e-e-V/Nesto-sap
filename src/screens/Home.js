@@ -70,6 +70,47 @@ const Home = () => {
           selectID={"website_id"}
           url={"/returns"}
         />
+        <Title
+          getSelectedID={viewReport}
+          sites={sites}
+          reportName={"TRANSACTIONS"}
+          selectID={"website_id"}
+          url={"/financial-posting"}
+        />
+        <Title
+          getSelectedID={viewReport}
+          sites={sites}
+          reportName={"SHORTAGE"}
+          selectID={"website_id"}
+          url={"/shortage"}
+        />
+      </Box>
+      <Box
+        width="90%"
+        borderWidth="1px"
+        borderRadius="lg"
+        padding="20px"
+        marginTop="20px"
+        overflow="hidden"
+      >
+        <Text textColor="red" fontSize="20px" fontWeight="bold">
+          Stocks
+        </Text>
+        <Box width="100%" height="0%" borderWidth="1px" bg={"gray.400"}></Box>
+        <Title
+          getSelectedID={viewReport}
+          sites={sites}
+          reportName={"ON DEMAND"}
+          selectID={"website_id"}
+          url={"/on_demand"}
+        />
+        <Title
+          getSelectedID={viewReport}
+          sites={sites}
+          reportName={"SNAPSHOT"}
+          selectID={"website_id"}
+          url={"/snapshot"}
+        />
       </Box>
     </Flex>
   );

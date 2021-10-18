@@ -9,12 +9,9 @@ import {
   ModalOverlay,
   ModalBody,
   ModalCloseButton,
-  ModalFooter,
   ModalContent,
   ModalHeader,
-  Button,
   Flex,
-  Table,
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
@@ -24,6 +21,7 @@ import { ReservationListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
+import redirectToMagento from "../utils/redirectToMagento";
 dayjs.extend(UTC);
 // import MapsLink from "../components/MapsLink";
 // import ItemsTotal from "./ItemsTotal";
@@ -85,13 +83,32 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
           {data.map((item, index) => {
             return (
               <Tr key={`${index}`}>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>{item?.id}</Text>
+                </Td> */}
+                <Td minWidth={200}>
+                  <Text>
+                    {`${
+                      dayjs(item?.request_timestamp)
+                        .local()
+                        .format("DD/MM/YY") ?? "-"
+                    }`}
+                  </Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text>{item?.car_order?.increment_id ?? "-"}</Text>
+                  <Text
+                    cursor="pointer"
+                    onClick={() =>
+                      redirectToMagento(item?.car_order?.magento_order_id)
+                    }
+                  >
+                    {item?.car_order?.increment_id ?? "-"}
+                  </Text>
                 </Td>
-                <Td minWidth={100}>
+                <Td minWidth={200}>
+                  <Text>{item?.car_order?.reservation_guid ?? "-"}</Text>
+                </Td>
+                {/* <Td minWidth={100}>
                   <Text>{item?.car_order?.magento_order_id ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
@@ -99,7 +116,7 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                 </Td>
                 <Td minWidth={100}>
                   <Text>{item?.car_order?.customer_id ?? "-"}</Text>
-                </Td>
+                </Td> */}
                 <Td minWidth={100}>
                   <Text>{item?.reservation_type ?? "-"}</Text>
                 </Td>
@@ -128,7 +145,7 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                       onClick={() =>
                         retryFailed(
                           "reservation",
-                          item?.reservation_type.toUpperCase(),
+                          item?.reservation_type?.toUpperCase() ?? null,
                           item?.car_order?.reservation_status,
                           item?.car_order?.magento_order_id
                         )
@@ -163,11 +180,9 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                     Request&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.request_timestamp?.split("T")[0] +
-                          "  " +
-                          JsonContent?.request_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                        dayjs(JsonContent?.request_timestamp)
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>
@@ -180,11 +195,9 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                     Response&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.response_timestamp?.split("T")[0] +
-                          "  " +
-                          JsonContent?.response_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                        dayjs(JsonContent?.response_timestamp)
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>

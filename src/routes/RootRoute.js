@@ -2,7 +2,6 @@ import { useContext, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
 import Header from "../containers/Header";
-import SapCar from "../screens/SapCar";
 
 import { AuthContext } from "../context/AuthContext";
 import Login from "../screens/Login";
@@ -10,6 +9,8 @@ import Home from "../screens/Home";
 import Returns from "../screens/Returns";
 import Sales from "../screens/Sales";
 import Reservation from "../screens/Reservation";
+import FinancialPosting from "../screens/FinancialPosting";
+import OnDemand from "../screens/OnDemand";
 
 const RootRoute = () => {
   const { isLoggedIn, checkAuthState } = useContext(AuthContext);
@@ -29,6 +30,14 @@ const RootRoute = () => {
             <Route exact path="/sales" component={Sales} />
             <Route exact path="/reservation" component={Reservation} />
             <Route exact path="/returns" component={Returns} />
+            <Route
+              exact
+              path="/financial-posting"
+              component={FinancialPosting}
+            />
+            {/* <Route exact path="/shortage" component={Reservation} /> */}
+            <Route exact path="/on_demand" component={OnDemand} />
+            {/* <Route exact path="/snapshot" component={Reservation} /> */}
             <Route exact path="/" component={Home} />
           </>
         ) : (

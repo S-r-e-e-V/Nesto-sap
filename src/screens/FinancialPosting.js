@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Table,
-  TableCaption,
   Flex,
   Select,
   useToast,
@@ -9,50 +9,39 @@ import {
   Box,
   Input,
   Badge,
-  Popover,
-  PopoverTrigger,
-  Tooltip,
-  PopoverContent,
-  Text,
 } from "@chakra-ui/react";
-import {
-  CalendarIcon,
-  Search2Icon,
-  ViewIcon,
-  ViewOffIcon,
-} from "@chakra-ui/icons";
+import { CalendarIcon } from "@chakra-ui/icons";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import dayjs from "dayjs";
-import isToday from "dayjs/plugin/isToday";
 
-import {
-  OrderListTableHead,
-  ReturnListTableHead,
-} from "../components/TableHeads";
-import OrderTable from "../containers/OrderTable";
-import ReturnOrderTable from "../containers/ReturnOrderTable";
+import { FinancialPostingTableHead } from "../components/TableHeads";
 
-import { postSapcarOrders, getStores, postreturnOrders } from "../api";
+import { postreservationOrders, getStores } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
+import ReservationOrderTable from "../containers/ReservationOrdersTable";
 
-function SapCar(props) {
+function FinancialPosting(props) {
   const searchEl = useRef(null);
+
+  const toast = useToast();
+
+  const params = new URLSearchParams(useLocation().search);
+  const defaultSiteID = params.get("id");
 
   const [isViewIcon, setIsViewIcon] = useState(true);
   const [page, setPage] = useState(1);
   const [reload, setreload] = useState(false);
   const [startLimit, setstartLimit] = useState(0);
   const [endLimit, setendLimit] = useState(10);
-  const [selectedSite, setselectedSite] = useState("8042");
-  const [selectedTable, setselectedTable] = useState("all");
+  const [selectedSite, setselectedSite] = useState(defaultSiteID);
+  const [selectedTable, setselectedTable] = useState("");
+  const [reservationFailed, setreservationFailed] = useState(false);
   const [searchFilter, setsearchFilter] = useState("");
 
   var start_date = new Date();
   start_date.setMonth(start_date.getMonth() - 1);
   const [startDate, setstartDate] = useState(start_date);
   const [endDate, setendDate] = useState(new Date());
-  //   const toast = useToast();
 
   const [emptyLoading, setemptyLoading] = useState(false);
   const [orders, setorders] = useState([]);
@@ -63,9 +52,7 @@ function SapCar(props) {
       try {
         const sites = await getStores();
         if (sites) {
-          const parsedSites = JSON.parse(sites);
-          const siteArray = Object.values(parsedSites);
-          setSites(siteArray);
+          setSites(Object.values(sites));
         }
       } catch (e) {
         console.log(e);
@@ -76,44 +63,36 @@ function SapCar(props) {
     loadSites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const getOrders = async () => {
+  const getReservationList = async () => {
     setemptyLoading(true);
-    let payload =
-      selectedTable === "return_orders"
-        ? {
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString(),
-            sales_invoice_failed:
-              selectedTable === "sales_invoice_failed" ? true : false,
-            reservation_failed:
-              selectedTable === "reservation_failed" ? true : false,
-            searchTerm: searchFilter,
-            store_id: selectedSite,
-          }
-        : {
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString(),
-            sales_invoice_failed:
-              selectedTable === "sales_invoice_failed" ? true : false,
-            reservation_failed:
-              selectedTable === "reservation_failed" ? true : false,
-            searchTerm: searchFilter,
-            site_id: selectedSite,
-          };
-    const response =
-      selectedTable === "return_orders"
-        ? await postreturnOrders(payload, startLimit, endLimit)
-        : await postSapcarOrders(payload, startLimit, endLimit);
+    let payload = {
+      start_date: startDate.toISOString(),
+      end_date: endDate.toISOString(),
+      reservation_type: selectedTable === "" ? [] : [selectedTable],
+      reservation_failed: reservationFailed === "true" ? true : false,
+      searchTerm: searchFilter,
+      store_id: selectedSite,
+    };
+    const response = await postreservationOrders(payload, startLimit, endLimit);
+    if (response.status === 400 || response.orderCount === 0) {
+      toast({
+        description: "List is empty",
+        status: "error",
+        duration: 2500,
+        isClosable: true,
+      });
+    }
     setemptyLoading(false);
     setorders(response);
   };
-  console.log(orders);
+  console.log("orders", orders);
   useEffect(() => {
-    getOrders();
+    getReservationList();
   }, [
     page,
     selectedSite,
     selectedTable,
+    reservationFailed,
     searchFilter,
     startDate,
     endDate,
@@ -147,13 +126,11 @@ function SapCar(props) {
   };
   return (
     <Flex direction="column">
-      {/* <Center> */}
       <Box width="185px" mr="20px" my="10px">
         <Badge variant="subtle" fontSize="16px" colorScheme="blue">
-          Orders
+          Financial Posting
         </Badge>
       </Box>
-      {/* </Center> */}
       <Flex width={"100%"} wrap="wrap" justifyContent="space-between" my="10px">
         <Select
           variant="filled"
@@ -161,6 +138,7 @@ function SapCar(props) {
           defaultValue={selectedSite}
           value={selectedSite}
           onChange={(e) => {
+            setPageNumber(1);
             setselectedSite(e?.target?.value);
           }}
           size="sm"
@@ -182,6 +160,7 @@ function SapCar(props) {
           defaultValue="List All"
           value={selectedTable}
           onChange={(e) => {
+            setPageNumber(1);
             setselectedTable(e?.target?.value);
           }}
           size="sm"
@@ -190,24 +169,49 @@ function SapCar(props) {
           mr="20px"
           my="10px"
         >
-          <option value="all" key="all">
-            List All
+          <option value="" key="all">
+            Type: List All
           </option>
-          <option value="reservation_failed" key="reservation_failed">
-            Reservation Failed
+          <option value="bank_commission" key="bank_commission">
+            Type: Bank Commission
           </option>
-          <option value="sales_invoice_failed" key="sales_invoice_failed">
-            Sales Invoice Failed
+          <option value="card_commission" key="card_commission">
+            Type: Card Commission
           </option>
-          <option value="return_orders" key="return_orders">
-            Return Orders
+          <option value="delivery_charge" key="delivery_charge">
+            Type: Delivery Charge
+          </option>
+          <option value="excess_shortage" key="excess_shortage">
+            Type: Excess Shortage
           </option>
         </Select>
+        {/* <Select
+          variant="filled"
+          defaultValue="List All"
+          value={reservationFailed}
+          onChange={(e) => {
+            setPageNumber(1);
+            setreservationFailed(e?.target?.value);
+          }}
+          size="sm"
+          width="150px"
+          borderRadius="5px"
+          mr="20px"
+          my="10px"
+        >
+          <option value="false" key="all">
+            List All
+          </option>
+          <option value="true" key="failed">
+            Reservation Failed
+          </option>
+        </Select> */}
         <Box my="10px" mr="20px">
           <DatePicker
             selected={startDate}
             maxDate={startDate > endDate ? endDate : new Date()}
             onChange={(date) => {
+              setPageNumber(1);
               setstartDate(date);
             }}
             dateFormat="PP"
@@ -226,6 +230,7 @@ function SapCar(props) {
             minDate={startDate}
             maxDate={new Date()}
             onChange={(date) => {
+              setPageNumber(1);
               setendDate(date);
             }}
             dateFormat="PP"
@@ -238,40 +243,6 @@ function SapCar(props) {
           />
         </Box>
 
-        {/* <Popover>
-          <PopoverTrigger>
-            <Tooltip label={isViewIcon ? "View JSON" : "Hide JSON"} hasArrow>
-              <Button
-                background="#EDF2F7"
-                color="#474a57"
-                outline="none"
-                onClick={() => {
-                  setIsViewIcon(!isViewIcon);
-                }}
-                mr="10px"
-              >
-                {isViewIcon ? (
-                  <ViewIcon h="1em" w="1em" />
-                ) : (
-                  <ViewOffIcon h="1em" w="1em" />
-                )}
-              </Button>
-            </Tooltip>
-          </PopoverTrigger>
-          <PopoverContent
-            // position="left"
-            height="500px"
-            width="400px"
-            overflow="scroll"
-            // marginLeft="-200px"
-          >
-            <Text fontSize="12px">
-              {
-                "lksdflksfjlksdjflksd sd fs jklsdj lskdfjsdd fsdlkfjslkdfj sdf fsdkfjsdklfj"
-              }
-            </Text>
-          </PopoverContent>
-        </Popover> */}
         <Flex alignItems="center">
           <Input
             ref={searchEl}
@@ -281,11 +252,6 @@ function SapCar(props) {
             mr="20px"
             width="350px"
           />
-          {/* <Search2Icon
-            onClick={() => {
-              setsearchFilter(searchEl.current.value);
-            }}
-          /> */}
           <Button
             size="sm"
             my="10px"
@@ -295,6 +261,7 @@ function SapCar(props) {
             color="#474a57"
             outline="none"
             onClick={() => {
+              setPageNumber(1);
               setsearchFilter(searchEl.current.value);
             }}
           >
@@ -302,55 +269,26 @@ function SapCar(props) {
           </Button>
         </Flex>
       </Flex>
-      {/* <Popover>
-        <PopoverTrigger>
-          <Button
-            size="sm"
-            my="10px"
-            mr="20px"
-            width="100px"
-            background="#EDF2F7"
-            color="#474a57"
-            outline="none"
-          >
-            View Json
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent padding="5px">
-          Json content
-        </PopoverContent>
-      </Popover> */}
       <Flex overflowX="auto">
-        {selectedTable === "return_orders" ? (
-          <Table variant="simple" size="sm">
-            <ReturnListTableHead />
-            <ReturnOrderTable
-              data={orders.orderList ?? []}
-              emptyLoading={emptyLoading}
-              setreload={setreload}
-            />
-          </Table>
-        ) : (
-          <Table variant="simple" size="sm">
-            <OrderListTableHead />
-            <OrderTable
-              data={orders.orderList ?? []}
-              emptyLoading={emptyLoading}
-              setreload={setreload}
-            />
-          </Table>
-        )}
+        <Table variant="simple" size="sm">
+          <FinancialPostingTableHead />
+          {/* <ReservationOrderTable
+            data={orders.reservationList ?? []}
+            emptyLoading={emptyLoading}
+            setreload={setreload}
+          /> */}
+        </Table>
       </Flex>
-      {!emptyLoading && (
+      {/* {!emptyLoading && (
         <PageSwitcher
           page={page}
           setter={setPageNumber}
-          total={parseInt(orders?.totalCount / 10)}
+          total={Math.ceil(orders?.orderCount / 10)}
           setHasPageChanged={setHasPageChanged}
         />
-      )}
+      )} */}
     </Flex>
   );
 }
 
-export default SapCar;
+export default FinancialPosting;

@@ -25,12 +25,6 @@ export const getStores = async () => {
   const URL = `${API_BASE_URL}/mis/sites`;
   return get(URL, false, false);
 };
-//delete 🗑
-export const postSapcarOrders = async (PAYLOAD, startLimit, endLimit) => {
-  const URL = `${API_BASE_URL}/sap-car/orders/list?startLimit=${startLimit}&endLimit=${endLimit}`;
-  return post(URL, PAYLOAD, true);
-};
-//
 export const postreturnOrders = async (PAYLOAD, startLimit, endLimit) => {
   const URL = `${API_BASE_URL}/sap-console/return/list?startLimit=${startLimit}&endLimit=${endLimit}`;
   return post(URL, PAYLOAD, true);

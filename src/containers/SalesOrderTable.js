@@ -18,17 +18,12 @@ import {
   Divider,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
-import {
-  OrderItemsTableHead,
-  ReturnsTableHead,
-} from "../components/TableHeads";
-import ReturnItemsTable from "../containers/ReturnItemsTable";
 import { SalesListSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
-import CarOrderItems from "./CarOrderItemsTable";
 import ReservationStatus from "../utils/reservationStatus";
+import redirectToMagento from "../utils/redirectToMagento";
 dayjs.extend(UTC);
 // import MapsLink from "../components/MapsLink";
 // import ItemsTotal from "./ItemsTotal";
@@ -82,8 +77,6 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
   };
   const onClose = () => {
     setisOpen(false);
-    // setisopenOrderItems(false);
-    // setisopenReturns(false);
   };
   return (
     <>
@@ -93,13 +86,32 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
           {data.map((item, index) => {
             return (
               <Tr key={`${index}`}>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>{item?.id}</Text>
+                </Td> */}
+                <Td minWidth={200}>
+                  <Text>
+                    {`${
+                      dayjs(item?.request_timestamp)
+                        .local()
+                        .format("DD/MM/YY") ?? "-"
+                    }`}
+                  </Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text>{item?.car_order?.increment_id ?? "-"}</Text>
+                  <Text
+                    cursor="pointer"
+                    onClick={() =>
+                      redirectToMagento(item?.car_order?.magento_order_id)
+                    }
+                  >
+                    {item?.car_order?.increment_id ?? "-"}
+                  </Text>
                 </Td>
-                <Td minWidth={100}>
+                <Td minWidth={200}>
+                  <Text>{item?.car_order?.reservation_guid ?? "-"}</Text>
+                </Td>
+                {/* <Td minWidth={100}>
                   <Text>{item?.car_order?.magento_order_id ?? "-"}</Text>
                 </Td>
                 <Td minWidth={100}>
@@ -107,17 +119,22 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
                 </Td>
                 <Td minWidth={100}>
                   <Text>{item?.car_order?.customer_id ?? "-"}</Text>
-                </Td>
+                </Td> */}
                 <Td minWidth={100}>
                   <Text>{item?.sales_invoiced ?? "-"}</Text>
                 </Td>
-                <Td minWidth={100}>
-                  <Text>
+                <Td minWidth={200}>
+                  {/* <Text>
                     {item?.sales_invoiced_timestamp?.split("T")[0] +
                       "  " +
                       item?.sales_invoiced_timestamp
                         ?.split("T")[1]
                         .split(".")[0] ?? "-"}
+                  </Text> */}
+                  <Text>
+                    {dayjs(item?.sales_invoiced_timestamp)
+                      .local()
+                      .format("DD/MM/YY H:mm:ss A") ?? "-"}
                   </Text>
                 </Td>
                 <Td minWidth={100}>
@@ -177,11 +194,12 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
                     Request&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.request_timestamp?.split("T")[0] +
-                          "  " +
+                        dayjs(
                           JsonContent?.request_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                            ?.sales_invoiced_timestamp
+                        )
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>
@@ -194,11 +212,12 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
                     Response&nbsp;
                     <Flex color="red">
                       {`[${
-                        JsonContent?.response_timestamp?.split("T")[0] +
-                          "  " +
+                        dayjs(
                           JsonContent?.response_timestamp
-                            ?.split("T")[1]
-                            .split(".")[0] ?? "-"
+                            ?.sales_invoiced_timestamp
+                        )
+                          .local()
+                          .format("DD/MM/YY H:mm:ss A") ?? "-"
                       }]`}{" "}
                     </Flex>
                   </Flex>
