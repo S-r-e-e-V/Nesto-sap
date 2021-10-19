@@ -69,3 +69,14 @@ export const OnDemandStockTableHead = () => (
     </Tr>
   </Thead>
 );
+export const SnapshotStockTableHead = () => (
+  <Thead>
+    <Tr>
+      <Th>ID</Th>
+      <Th>Request Time</Th>
+      <Th>Response Time</Th>
+      <Th>Request</Th>
+      <Th>Response</Th>
+    </Tr>
+  </Thead>
+);

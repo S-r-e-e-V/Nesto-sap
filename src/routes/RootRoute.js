@@ -11,6 +11,7 @@ import Sales from "../screens/Sales";
 import Reservation from "../screens/Reservation";
 import FinancialPosting from "../screens/FinancialPosting";
 import OnDemand from "../screens/OnDemand";
+import Snapshot from "../screens/Snapshot";
 
 const RootRoute = () => {
   const { isLoggedIn, checkAuthState } = useContext(AuthContext);
@@ -35,9 +36,8 @@ const RootRoute = () => {
               path="/financial-posting"
               component={FinancialPosting}
             />
-            {/* <Route exact path="/shortage" component={Reservation} /> */}
             <Route exact path="/on_demand" component={OnDemand} />
-            {/* <Route exact path="/snapshot" component={Reservation} /> */}
+            <Route exact path="/snapshot" component={Snapshot} />
             <Route exact path="/" component={Home} />
           </>
         ) : (

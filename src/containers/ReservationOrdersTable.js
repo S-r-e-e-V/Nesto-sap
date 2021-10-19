@@ -29,7 +29,7 @@ dayjs.extend(UTC);
 
 const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
-  const [JsonContent, setJsonContent] = useState("Loading please wait");
+  const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
   const retryFailed = async (type, action, status, id) => {
     let payload = {
@@ -75,6 +75,7 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const onClose = () => {
     setisOpen(false);
   };
+  console.log(decodeURIComponent(JsonContent.response));
   return (
     <>
       {emptyLoading && <ReservationListSkeleton />}
