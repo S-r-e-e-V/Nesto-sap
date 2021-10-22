@@ -16,9 +16,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { FinancialPostingTableHead } from "../components/TableHeads";
 
-import { postreservationOrders, getStores } from "../api";
+import { postfinanceList, getStores } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
-import ReservationOrderTable from "../containers/ReservationOrdersTable";
+import FinancialPostingTable from "../containers/FinancialPostingTable";
 
 function FinancialPosting(props) {
   const searchEl = useRef(null);
@@ -35,7 +35,7 @@ function FinancialPosting(props) {
   const [endLimit, setendLimit] = useState(10);
   const [selectedSite, setselectedSite] = useState(defaultSiteID);
   const [selectedTable, setselectedTable] = useState("");
-  const [reservationFailed, setreservationFailed] = useState(false);
+  const [Failed, setFailed] = useState(false);
   const [searchFilter, setsearchFilter] = useState("");
 
   var start_date = new Date();
@@ -44,7 +44,7 @@ function FinancialPosting(props) {
   const [endDate, setendDate] = useState(new Date());
 
   const [emptyLoading, setemptyLoading] = useState(false);
-  const [orders, setorders] = useState([]);
+  const [data, setdata] = useState([]);
   const [sites, setSites] = useState([]);
 
   useEffect(() => {
@@ -63,17 +63,17 @@ function FinancialPosting(props) {
     loadSites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const getReservationList = async () => {
+  const List = async () => {
     setemptyLoading(true);
     let payload = {
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      reservation_type: selectedTable === "" ? [] : [selectedTable],
-      reservation_failed: reservationFailed === "true" ? true : false,
+      type: selectedTable === "" ? [] : [selectedTable],
+      financial_posting_failed: Failed === "true" ? true : false,
       searchTerm: searchFilter,
       store_id: selectedSite,
     };
-    const response = await postreservationOrders(payload, startLimit, endLimit);
+    const response = await postfinanceList(payload, startLimit, endLimit);
     if (response.status === 400 || response.orderCount === 0) {
       toast({
         description: "List is empty",
@@ -83,16 +83,16 @@ function FinancialPosting(props) {
       });
     }
     setemptyLoading(false);
-    setorders(response);
+    setdata(response);
   };
-  console.log("orders", orders);
+  console.log("data", data);
   useEffect(() => {
-    getReservationList();
+    List();
   }, [
     page,
     selectedSite,
     selectedTable,
-    reservationFailed,
+    Failed,
     searchFilter,
     startDate,
     endDate,
@@ -185,13 +185,13 @@ function FinancialPosting(props) {
             Type: Excess Shortage
           </option>
         </Select>
-        {/* <Select
+        <Select
           variant="filled"
           defaultValue="List All"
-          value={reservationFailed}
+          value={Failed}
           onChange={(e) => {
             setPageNumber(1);
-            setreservationFailed(e?.target?.value);
+            setFailed(e?.target?.value);
           }}
           size="sm"
           width="150px"
@@ -203,9 +203,9 @@ function FinancialPosting(props) {
             List All
           </option>
           <option value="true" key="failed">
-            Reservation Failed
+            Financial Posting Failed
           </option>
-        </Select> */}
+        </Select>
         <Box my="10px" mr="20px">
           <DatePicker
             selected={startDate}
@@ -272,21 +272,21 @@ function FinancialPosting(props) {
       <Flex overflowX="auto">
         <Table variant="simple" size="sm">
           <FinancialPostingTableHead />
-          {/* <ReservationOrderTable
-            data={orders.reservationList ?? []}
+          <FinancialPostingTable
+            data={data?.financialPostingList ?? []}
             emptyLoading={emptyLoading}
             setreload={setreload}
-          /> */}
+          />
         </Table>
       </Flex>
-      {/* {!emptyLoading && (
+      {!emptyLoading && (
         <PageSwitcher
           page={page}
           setter={setPageNumber}
-          total={Math.ceil(orders?.orderCount / 10)}
+          total={Math.ceil(data?.orderCount / 10)}
           setHasPageChanged={setHasPageChanged}
         />
-      )} */}
+      )}
     </Flex>
   );
 }

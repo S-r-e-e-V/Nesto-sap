@@ -37,6 +37,18 @@ export const postsalesOrders = async (PAYLOAD, startLimit, endLimit) => {
   const URL = `${API_BASE_URL}/sap-console/sales/list?startLimit=${startLimit}&endLimit=${endLimit}`;
   return post(URL, PAYLOAD, true);
 };
+export const postfinanceList = async (PAYLOAD, startLimit, endLimit) => {
+  const URL = `${API_BASE_URL}/sap-console/finance/list?startLimit=${startLimit}&endLimit=${endLimit}`;
+  return post(URL, PAYLOAD, true);
+};
+export const postondemandList = async (PAYLOAD, startLimit, endLimit) => {
+  const URL = `${API_BASE_URL}/sap-console/ondemand/list?startLimit=${startLimit}&endLimit=${endLimit}`;
+  return post(URL, PAYLOAD, true);
+};
+export const postsnapshotList = async (PAYLOAD, startLimit, endLimit) => {
+  const URL = `${API_BASE_URL}/sap-console/snapshot/list?startLimit=${startLimit}&endLimit=${endLimit}`;
+  return post(URL, PAYLOAD, true);
+};
 export const postretryFailed = async (PAYLOAD, ID) => {
   const URL = `${API_BASE_URL}/sap-console/retry/${ID}`;
   return post(URL, PAYLOAD, true, true);

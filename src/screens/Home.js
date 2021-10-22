@@ -73,17 +73,10 @@ const Home = () => {
         <Title
           getSelectedID={viewReport}
           sites={sites}
-          reportName={"TRANSACTIONS"}
+          reportName={"FINANCIAL POSTING"}
           selectID={"website_id"}
           url={"/financial-posting"}
         />
-        {/* <Title
-          getSelectedID={viewReport}
-          sites={sites}
-          reportName={"SHORTAGE"}
-          selectID={"website_id"}
-          url={"/shortage"}
-        /> */}
       </Box>
       <Box
         width="90%"

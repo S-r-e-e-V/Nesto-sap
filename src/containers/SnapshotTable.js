@@ -16,22 +16,24 @@ import {
   Button,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
-import { ReturnListSkeleton } from "../components/TableSkeletons";
+import ReservationStatusKey from "../utils/reservationStatusKey";
+import ReservationStatus from "../utils/reservationStatus";
+import { SanpshotSkeleton } from "../components/TableSkeletons";
 import { getJson, postretryFailed } from "../api";
 import dayjs from "dayjs";
 import UTC from "dayjs/plugin/utc";
-import ReservationStatus from "../utils/reservationStatus";
 import redirectToMagento from "../utils/redirectToMagento";
 dayjs.extend(UTC);
-
-const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
+const SnapshotTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
-  const [JsonContent, setJsonContent] = useState("Loading please wait");
+  const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
   const [isloading, setisloading] = useState(false);
-  const retryFailed = async (type, id) => {
+  const retryFailed = async (type, action, status, id) => {
     let payload = {
       type: type,
+      action: action,
+      status: ReservationStatusKey(status),
     };
     setisloading(true);
     const response = await postretryFailed(payload, id);
@@ -75,82 +77,61 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   };
   return (
     <>
-      {emptyLoading && <ReturnListSkeleton />}
+      {emptyLoading && <SanpshotSkeleton />}
       {!emptyLoading && data && (
         <Tbody>
           {data.map((item, index) => {
             return (
               <Tr key={`${index}`}>
-                {/* <Td minWidth={100}>
-                  <Text>{item?.id}</Text>
-                </Td> */}
+                <Td minWidth={100}>
+                  <Text>{item?.id ?? "-"}</Text>
+                </Td>
                 <Td minWidth={200}>
+                  <Text>{item?.validate_key ?? "-"}</Text>
+                </Td>
+                <Td minWidth={100}>
                   <Text>
                     {`${
-                      dayjs(item?.request_timestamp)
+                      dayjs(item?.requested_timestamp)
                         .local()
-                        .format("DD/MM/YY") ?? "-"
+                        .format("DD/MM/YY H:mm:s") ?? "-"
                     }`}
                   </Text>
                 </Td>
                 <Td minWidth={100}>
-                  <Text
-                    cursor="pointer"
-                    onClick={() =>
-                      redirectToMagento(item?.car_order?.magento_order_id)
-                    }
-                  >
-                    {item?.car_order?.increment_id ?? "-"}
-                  </Text>
-                </Td>
-                {/* <Td minWidth={100}>
-                  <Text>{item?.car_order?.magento_order_id ?? "-"}</Text>
-                </Td> */}
-                <Td minWidth={200}>
-                  <Text>{item?.car_order?.reservation_guid ?? "-"}</Text>
-                </Td>
-                {/* <Td minWidth={100}>
-                  <Text>{item?.car_order?.customer_id ?? "-"}</Text>
-                </Td> */}
-                <Td minWidth={100}>
-                  <Text>{item?.return_invoiced ?? "-"}</Text>
-                </Td>
-                <Td minWidth={200}>
                   <Text>
-                    {dayjs(item?.return_invoiced_timestamp)
-                      .local()
-                      .format("DD/MM/YY H:mm:ss A") ?? "-"}
+                    {`${
+                      dayjs(item?.responded_timestamp)
+                        .local()
+                        .format("DD/MM/YY H:mm:s") ?? "-"
+                    }`}
                   </Text>
                 </Td>
-                <Td minWidth={100}>
-                  <Text>
-                    {ReservationStatus(item?.car_order?.reservation_status)}
-                  </Text>
-                  {/* <Text>{item?.car_order?.reservation_status ?? "-"}</Text> */}
-                </Td>
-                <Td minWidth={100}>
-                  <Text>{item?.car_order?.grand_total ?? "-"}</Text>
-                </Td>
-                <Td minWidth={100}>
-                  <Text>{item?.return_items_total ?? "-"}</Text>
-                </Td>
-
                 <Td minWidth={100}>
                   <Badge
                     cursor="pointer"
                     colorScheme="purple"
-                    onClick={() => viewJson("return", item?.id)}
+                    onClick={() => viewJson("snapshot", item?.id)}
                   >
                     View
                   </Badge>
                 </Td>
                 <Td minWidth={100}>
-                  {item?.return_failed ? (
+                  <Text>{item?.failed ? "Failed" : "Success"}</Text>
+                </Td>
+                {/* <Td minWidth={100}>
+                  {item?.snapshot_stock_failed ? (
                     <Button
                       isLoading={isloading}
+                      loadingText=""
                       colorScheme="green"
                       onClick={() =>
-                        retryFailed("return", item?.car_order?.magento_order_id)
+                        retryFailed(
+                          "snapshot",
+                          item?.reservation_type?.toUpperCase() ?? null,
+                          item?.reservation_status,
+                          item?.magento_order_id
+                        )
                       }
                     >
                       Retry
@@ -158,16 +139,16 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                   ) : (
                     <Text>-</Text>
                   )}
-                </Td>
+                </Td> */}
               </Tr>
             );
           })}
           <Modal
-            size="xl"
             isOpen={isOpen}
             onClose={onClose}
             scrollBehavior="inside"
             isCentered
+            size="xl"
           >
             <ModalOverlay />
             <ModalContent>
@@ -208,50 +189,10 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
               </ModalBody>
             </ModalContent>
           </Modal>
-          {/* <Modal
-            isOpen={isopenReturns}
-            onClose={onClose}
-            scrollBehavior="inside"
-            isCentered
-            size="full"
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader textTransform="capitalize">Returns</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Table variant="simple" size="sm">
-                  <ReturnsTableHead />
-                  <ReturnItemsTable data={OrderItems?.returns ?? []} />
-                </Table>
-              </ModalBody>
-            </ModalContent>
-          </Modal> */}
-          {/* <Modal
-            isOpen={isopenOrderItems}
-            onClose={onClose}
-            scrollBehavior="inside"
-            isCentered
-            size="full"
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader textTransform="capitalize">
-                Car Order Items
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <Table variant="simple" size="sm">
-                  <OrderItemsTableHead />
-                  <CarOrderItems data={OrderItems?.car_order_items ?? []} />
-                </Table>
-              </ModalBody>
-            </ModalContent>
-          </Modal> */}
         </Tbody>
       )}
     </>
   );
 };
 
-export default ReturnOrderTable;
+export default SnapshotTable;

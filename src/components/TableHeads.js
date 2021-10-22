@@ -49,12 +49,14 @@ export const ReservationTableHead = () => (
 export const FinancialPostingTableHead = () => (
   <Thead>
     <Tr>
-      <Th>Date</Th>
-      <Th>Sequence Number</Th>
-      <Th>Type</Th>
       <Th>Financial Posting Date</Th>
+      <Th>Sequence Number</Th>
+      <Th>Financial Sequence Number</Th>
+      <Th>Type</Th>
+      <Th>Request Time</Th>
+      <Th>Response Time</Th>
       <Th>Request and Response</Th>
-      <Th>Actions</Th>
+      <Th>Status</Th>
     </Tr>
   </Thead>
 );
@@ -64,8 +66,8 @@ export const OnDemandStockTableHead = () => (
       <Th>ID</Th>
       <Th>Request Time</Th>
       <Th>Response Time</Th>
-      <Th>Request</Th>
-      <Th>Response</Th>
+      <Th>Request and Response</Th>
+      <Th>Status</Th>
     </Tr>
   </Thead>
 );
@@ -73,10 +75,11 @@ export const SnapshotStockTableHead = () => (
   <Thead>
     <Tr>
       <Th>ID</Th>
+      <Th>Validate Key</Th>
       <Th>Request Time</Th>
       <Th>Response Time</Th>
-      <Th>Request</Th>
-      <Th>Response</Th>
+      <Th>Request and Response</Th>
+      <Th>Status</Th>
     </Tr>
   </Thead>
 );

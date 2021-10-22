@@ -101,4 +101,92 @@ const SalesListSkeleton = () => (
     ))}
   </Tbody>
 );
-export { ReturnListSkeleton, ReservationListSkeleton, SalesListSkeleton };
+const FinancialPostingSkeleton = () => (
+  <Tbody>
+    {[1, 2, 3].map((i) => (
+      <Tr key={i}>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+      </Tr>
+    ))}
+  </Tbody>
+);
+const OndemandSkeleton = () => (
+  <Tbody>
+    {[1, 2, 3].map((i) => (
+      <Tr key={i}>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+      </Tr>
+    ))}
+  </Tbody>
+);
+const SanpshotSkeleton = () => (
+  <Tbody>
+    {[1, 2, 3].map((i) => (
+      <Tr key={i}>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={200}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
+      </Tr>
+    ))}
+  </Tbody>
+);
+export {
+  ReturnListSkeleton,
+  ReservationListSkeleton,
+  SalesListSkeleton,
+  FinancialPostingSkeleton,
+  OndemandSkeleton,
+  SanpshotSkeleton,
+};

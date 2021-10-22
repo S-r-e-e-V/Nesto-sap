@@ -13,6 +13,7 @@ import {
   ModalHeader,
   Flex,
   Divider,
+  Button,
 } from "@chakra-ui/react"; //Table Imports
 import { useState } from "react";
 import ReservationStatusKey from "../utils/reservationStatusKey";
@@ -31,13 +32,16 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
+  const [isloading, setisloading] = useState(false);
   const retryFailed = async (type, action, status, id) => {
     let payload = {
       type: type,
       action: action,
       status: ReservationStatusKey(status),
     };
+    setisloading(true);
     const response = await postretryFailed(payload, id);
+    setisloading(false);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -75,7 +79,6 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const onClose = () => {
     setisOpen(false);
   };
-  console.log(decodeURIComponent(JsonContent.response));
   return (
     <>
       {emptyLoading && <ReservationListSkeleton />}
@@ -140,8 +143,9 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                 </Td>
                 <Td minWidth={100}>
                   {item?.reservation_failed ? (
-                    <Badge
-                      cursor="pointer"
+                    <Button
+                      isLoading={isloading}
+                      loadingText=""
                       colorScheme="green"
                       onClick={() =>
                         retryFailed(
@@ -153,7 +157,7 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                       }
                     >
                       Retry
-                    </Badge>
+                    </Button>
                   ) : (
                     <Text>-</Text>
                   )}

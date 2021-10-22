@@ -16,9 +16,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { SnapshotStockTableHead } from "../components/TableHeads";
 
-import { postreservationOrders, getStores } from "../api";
+import { postsnapshotList, getStores } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
-import ReservationOrderTable from "../containers/ReservationOrdersTable";
+import SnapshotTable from "../containers/SnapshotTable";
 
 function Snapshot(props) {
   const searchEl = useRef(null);
@@ -35,7 +35,7 @@ function Snapshot(props) {
   const [endLimit, setendLimit] = useState(10);
   const [selectedSite, setselectedSite] = useState(defaultSiteID);
   const [selectedTable, setselectedTable] = useState("");
-  const [reservationFailed, setreservationFailed] = useState(false);
+  const [Failed, setFailed] = useState(false);
   const [searchFilter, setsearchFilter] = useState("");
 
   var start_date = new Date();
@@ -44,7 +44,7 @@ function Snapshot(props) {
   const [endDate, setendDate] = useState(new Date());
 
   const [emptyLoading, setemptyLoading] = useState(false);
-  const [orders, setorders] = useState([]);
+  const [data, setdata] = useState([]);
   const [sites, setSites] = useState([]);
 
   useEffect(() => {
@@ -68,12 +68,12 @@ function Snapshot(props) {
     let payload = {
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      reservation_type: selectedTable === "" ? [] : [selectedTable],
-      reservation_failed: reservationFailed === "true" ? true : false,
+      // reservation_type: selectedTable === "" ? [] : [selectedTable],
+      snapshot_stock_failed: Failed === "true" ? true : false,
       searchTerm: searchFilter,
       store_id: selectedSite,
     };
-    const response = await postreservationOrders(payload, startLimit, endLimit);
+    const response = await postsnapshotList(payload, startLimit, endLimit);
     if (response.status === 400 || response.orderCount === 0) {
       toast({
         description: "List is empty",
@@ -83,16 +83,16 @@ function Snapshot(props) {
       });
     }
     setemptyLoading(false);
-    setorders(response);
+    setdata(response);
   };
-  console.log("orders", orders);
+  console.log("data", data);
   useEffect(() => {
     getReservationList();
   }, [
     page,
     selectedSite,
     selectedTable,
-    reservationFailed,
+    Failed,
     searchFilter,
     startDate,
     endDate,
@@ -128,7 +128,7 @@ function Snapshot(props) {
     <Flex direction="column">
       <Box width="185px" mr="20px" my="10px">
         <Badge variant="subtle" fontSize="16px" colorScheme="blue">
-          On Demand Stock
+          Snapshot Stock
         </Badge>
       </Box>
       <Flex width={"100%"} wrap="wrap" justifyContent="space-between" my="10px">
@@ -184,14 +184,14 @@ function Snapshot(props) {
           <option value="delete" key="delete">
             Type: Delete
           </option>
-        </Select>
+        </Select> */}
         <Select
           variant="filled"
           defaultValue="List All"
-          value={reservationFailed}
+          value={Failed}
           onChange={(e) => {
             setPageNumber(1);
-            setreservationFailed(e?.target?.value);
+            setFailed(e?.target?.value);
           }}
           size="sm"
           width="150px"
@@ -203,9 +203,9 @@ function Snapshot(props) {
             List All
           </option>
           <option value="true" key="failed">
-            Reservation Failed
+            Snapshot Stock Failed
           </option>
-        </Select> */}
+        </Select>
         <Box my="10px" mr="20px">
           <DatePicker
             selected={startDate}
@@ -272,21 +272,21 @@ function Snapshot(props) {
       <Flex overflowX="auto">
         <Table variant="simple" size="sm">
           <SnapshotStockTableHead />
-          {/* <ReservationOrderTable
-            data={orders.reservationList ?? []}
+          <SnapshotTable
+            data={data.snapshotStockList ?? []}
             emptyLoading={emptyLoading}
             setreload={setreload}
-          /> */}
+          />
         </Table>
       </Flex>
-      {/* {!emptyLoading && (
+      {!emptyLoading && (
         <PageSwitcher
           page={page}
           setter={setPageNumber}
-          total={Math.ceil(orders?.orderCount / 10)}
+          total={Math.ceil(data?.orderCount / 10)}
           setHasPageChanged={setHasPageChanged}
         />
-      )} */}
+      )}
     </Flex>
   );
 }

@@ -33,6 +33,7 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
+  const [isloading, setisloading] = useState(false);
   // const [isopenOrderItems, setisopenOrderItems] = useState(false);
   // const [isopenReturns, setisopenReturns] = useState(false);
   // const [OrderItems, setOrderItems] = useState();
@@ -40,7 +41,9 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
     let payload = {
       type: type,
     };
+    setisloading(true);
     const response = await postretryFailed(payload, id);
+    setisloading(false);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -158,15 +161,15 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
                 </Td>
                 <Td minWidth={100}>
                   {item?.sales_invoice_failed ? (
-                    <Badge
-                      cursor="pointer"
+                    <Button
+                      isLoading={isloading}
                       colorScheme="green"
                       onClick={() =>
                         retryFailed("sale", item?.car_order?.magento_order_id)
                       }
                     >
                       Retry
-                    </Badge>
+                    </Button>
                   ) : (
                     <Text>-</Text>
                   )}

@@ -16,9 +16,9 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { OnDemandStockTableHead } from "../components/TableHeads";
 
-import { postreservationOrders, getStores } from "../api";
+import { postondemandList, getStores } from "../api";
 import PageSwitcher from "../components/PageSwitcher";
-import ReservationOrderTable from "../containers/ReservationOrdersTable";
+import OnDemandTable from "../containers/OnDemandTable";
 
 function OnDemand(props) {
   const searchEl = useRef(null);
@@ -35,7 +35,7 @@ function OnDemand(props) {
   const [endLimit, setendLimit] = useState(10);
   const [selectedSite, setselectedSite] = useState(defaultSiteID);
   const [selectedTable, setselectedTable] = useState("");
-  const [reservationFailed, setreservationFailed] = useState(false);
+  const [Failed, setFailed] = useState(false);
   const [searchFilter, setsearchFilter] = useState("");
 
   var start_date = new Date();
@@ -44,7 +44,7 @@ function OnDemand(props) {
   const [endDate, setendDate] = useState(new Date());
 
   const [emptyLoading, setemptyLoading] = useState(false);
-  const [orders, setorders] = useState([]);
+  const [data, setdata] = useState([]);
   const [sites, setSites] = useState([]);
 
   useEffect(() => {
@@ -68,12 +68,12 @@ function OnDemand(props) {
     let payload = {
       start_date: startDate.toISOString(),
       end_date: endDate.toISOString(),
-      reservation_type: selectedTable === "" ? [] : [selectedTable],
-      reservation_failed: reservationFailed === "true" ? true : false,
+      // reservation_type: selectedTable === "" ? [] : [selectedTable],
+      on_demand_failed: Failed === "true" ? true : false,
       searchTerm: searchFilter,
       store_id: selectedSite,
     };
-    const response = await postreservationOrders(payload, startLimit, endLimit);
+    const response = await postondemandList(payload, startLimit, endLimit);
     if (response.status === 400 || response.orderCount === 0) {
       toast({
         description: "List is empty",
@@ -83,16 +83,16 @@ function OnDemand(props) {
       });
     }
     setemptyLoading(false);
-    setorders(response);
+    setdata(response);
   };
-  console.log("orders", orders);
+  console.log("data", data);
   useEffect(() => {
     getReservationList();
   }, [
     page,
     selectedSite,
     selectedTable,
-    reservationFailed,
+    Failed,
     searchFilter,
     startDate,
     endDate,
@@ -184,14 +184,14 @@ function OnDemand(props) {
           <option value="delete" key="delete">
             Type: Delete
           </option>
-        </Select>
+        </Select> */}
         <Select
           variant="filled"
           defaultValue="List All"
-          value={reservationFailed}
+          value={Failed}
           onChange={(e) => {
             setPageNumber(1);
-            setreservationFailed(e?.target?.value);
+            setFailed(e?.target?.value);
           }}
           size="sm"
           width="150px"
@@ -203,9 +203,9 @@ function OnDemand(props) {
             List All
           </option>
           <option value="true" key="failed">
-            Reservation Failed
+            On Demand Failed
           </option>
-        </Select> */}
+        </Select>
         <Box my="10px" mr="20px">
           <DatePicker
             selected={startDate}
@@ -272,21 +272,21 @@ function OnDemand(props) {
       <Flex overflowX="auto">
         <Table variant="simple" size="sm">
           <OnDemandStockTableHead />
-          {/* <ReservationOrderTable
-            data={orders.reservationList ?? []}
+          <OnDemandTable
+            data={data.onDemandList ?? []}
             emptyLoading={emptyLoading}
             setreload={setreload}
-          /> */}
+          />
         </Table>
       </Flex>
-      {/* {!emptyLoading && (
+      {!emptyLoading && (
         <PageSwitcher
           page={page}
           setter={setPageNumber}
-          total={Math.ceil(orders?.orderCount / 10)}
+          total={Math.ceil(data?.orderCount / 10)}
           setHasPageChanged={setHasPageChanged}
         />
-      )} */}
+      )}
     </Flex>
   );
 }
