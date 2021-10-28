@@ -103,6 +103,7 @@ const Home = () => {
           reportName={"SNAPSHOT"}
           selectID={"website_id"}
           url={"/snapshot"}
+          isSiteVisible={false}
         />
       </Box>
     </Flex>

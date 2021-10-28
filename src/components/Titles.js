@@ -2,7 +2,14 @@ import { Flex, Box, Text, Button, Select, Icon } from "@chakra-ui/react";
 import { FcDocument } from "react-icons/fc";
 import { useState } from "react";
 
-const Title = ({ sites, getSelectedID, reportName, selectID, url }) => {
+const Title = ({
+  sites,
+  getSelectedID,
+  reportName,
+  selectID,
+  url,
+  isSiteVisible = true,
+}) => {
   const [selectedSite, setSelectedSite] = useState(
     selectID === "website_id" ? 8042 : 1
   );
@@ -24,39 +31,41 @@ const Title = ({ sites, getSelectedID, reportName, selectID, url }) => {
           <Text>{reportName}</Text>
         </Flex>
         <Flex alignItems="center">
-          <Select
-            variant="filled"
-            placeholder={sites?.length ? "Select site" : "No sites found"}
-            defaultValue={selectedSite}
-            value={selectedSite}
-            onChange={(e) => {
-              setSelectedSite(e?.target?.value);
-            }}
-            size="sm"
-            width="150px"
-            borderRadius="5px"
-            mr="20px"
-            my="10px"
-          >
-            {sites?.length
-              ? sites?.map((site) => (
-                  <option
-                    value={
-                      selectID === "website_id"
-                        ? site.sap_website_id
-                        : site.website_id
-                    }
-                    key={
-                      selectID === "website_id"
-                        ? site.sap_website_id
-                        : site.website_id
-                    }
-                  >
-                    Site:&nbsp;{site?.sap_website_id}
-                  </option>
-                ))
-              : null}
-          </Select>
+          {isSiteVisible && (
+            <Select
+              variant="filled"
+              placeholder={sites?.length ? "Select site" : "No sites found"}
+              defaultValue={selectedSite}
+              value={selectedSite}
+              onChange={(e) => {
+                setSelectedSite(e?.target?.value);
+              }}
+              size="sm"
+              width="150px"
+              borderRadius="5px"
+              mr="20px"
+              my="10px"
+            >
+              {sites?.length
+                ? sites?.map((site) => (
+                    <option
+                      value={
+                        selectID === "website_id"
+                          ? site.sap_website_id
+                          : site.website_id
+                      }
+                      key={
+                        selectID === "website_id"
+                          ? site.sap_website_id
+                          : site.website_id
+                      }
+                    >
+                      Site:&nbsp;{site?.sap_website_id}
+                    </option>
+                  ))
+                : null}
+            </Select>
+          )}
           <Button onClick={viewReport}>View</Button>
         </Flex>
       </Flex>

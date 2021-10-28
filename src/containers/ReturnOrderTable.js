@@ -28,14 +28,15 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
-  const [isloading, setisloading] = useState(false);
-  const retryFailed = async (type, id) => {
+  const [isloading, setisloading] = useState(-1);
+  const retryFailed = async (type, id, index) => {
     let payload = {
+      salesOrderId: id,
       type: type,
     };
-    setisloading(true);
-    const response = await postretryFailed(payload, id);
-    setisloading(false);
+    setisloading(index);
+    const response = await postretryFailed(payload);
+    setisloading(-1);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -147,10 +148,16 @@ const ReturnOrderTable = ({ emptyLoading, data, setreload }) => {
                 <Td minWidth={100}>
                   {item?.return_failed ? (
                     <Button
-                      isLoading={isloading}
+                      size="sm"
+                      isLoading={isloading === index ? true : false}
+                      disabled={isloading !== -1 ? true : false}
                       colorScheme="green"
                       onClick={() =>
-                        retryFailed("return", item?.car_order?.magento_order_id)
+                        retryFailed(
+                          "return",
+                          item?.car_order?.magento_order_id,
+                          index
+                        )
                       }
                     >
                       Retry

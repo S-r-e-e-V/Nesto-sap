@@ -56,7 +56,7 @@ export const FinancialPostingTableHead = () => (
       <Th>Request Time</Th>
       <Th>Response Time</Th>
       <Th>Request and Response</Th>
-      <Th>Status</Th>
+      <Th>Actions</Th>
     </Tr>
   </Thead>
 );
@@ -64,10 +64,11 @@ export const OnDemandStockTableHead = () => (
   <Thead>
     <Tr>
       <Th>ID</Th>
+      <Th>Batch</Th>
       <Th>Request Time</Th>
       <Th>Response Time</Th>
       <Th>Request and Response</Th>
-      <Th>Status</Th>
+      <Th>Actions</Th>
     </Tr>
   </Thead>
 );
@@ -79,7 +80,7 @@ export const SnapshotStockTableHead = () => (
       <Th>Request Time</Th>
       <Th>Response Time</Th>
       <Th>Request and Response</Th>
-      <Th>Status</Th>
+      <Th>Actions</Th>
     </Tr>
   </Thead>
 );

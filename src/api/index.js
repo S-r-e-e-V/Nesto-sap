@@ -49,8 +49,8 @@ export const postsnapshotList = async (PAYLOAD, startLimit, endLimit) => {
   const URL = `${API_BASE_URL}/sap-console/snapshot/list?startLimit=${startLimit}&endLimit=${endLimit}`;
   return post(URL, PAYLOAD, true);
 };
-export const postretryFailed = async (PAYLOAD, ID) => {
-  const URL = `${API_BASE_URL}/sap-console/retry/${ID}`;
+export const postretryFailed = async (PAYLOAD) => {
+  const URL = `${API_BASE_URL}/sap-console/retry`;
   return post(URL, PAYLOAD, true, true);
 };
 export const getJson = async (type, ID) => {

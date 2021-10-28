@@ -140,6 +140,9 @@ const OndemandSkeleton = () => (
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
+        <Td minWidth={100}>
+          <Skeleton height="25px" />
+        </Td>
         <Td minWidth={200}>
           <Skeleton height="25px" />
         </Td>
@@ -149,7 +152,7 @@ const OndemandSkeleton = () => (
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
-        <Td minWidth={100}>
+        <Td minWidth={200}>
           <Skeleton height="25px" />
         </Td>
       </Tr>
@@ -175,7 +178,7 @@ const SanpshotSkeleton = () => (
         <Td minWidth={100}>
           <Skeleton height="25px" />
         </Td>
-        <Td minWidth={100}>
+        <Td minWidth={200}>
           <Skeleton height="25px" />
         </Td>
       </Tr>

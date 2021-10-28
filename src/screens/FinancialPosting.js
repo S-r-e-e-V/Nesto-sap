@@ -181,8 +181,14 @@ function FinancialPosting(props) {
           <option value="delivery_charge" key="delivery_charge">
             Type: Delivery Charge
           </option>
-          <option value="excess_shortage" key="excess_shortage">
-            Type: Excess Shortage
+          <option value="tender" key="tender">
+            Type: Tender
+          </option>
+          <option value="shortage" key="shortage">
+            Type: Shortage
+          </option>
+          <option value="total" key="total">
+            Type: Total
           </option>
         </Select>
         <Select

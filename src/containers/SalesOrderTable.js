@@ -33,17 +33,18 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState("Loading please wait");
   const [isOpen, setisOpen] = useState(false);
-  const [isloading, setisloading] = useState(false);
+  const [isloading, setisloading] = useState(-1);
   // const [isopenOrderItems, setisopenOrderItems] = useState(false);
   // const [isopenReturns, setisopenReturns] = useState(false);
   // const [OrderItems, setOrderItems] = useState();
-  const retryFailed = async (type, id) => {
+  const retryFailed = async (type, id, index) => {
     let payload = {
+      salesOrderId: id,
       type: type,
     };
-    setisloading(true);
-    const response = await postretryFailed(payload, id);
-    setisloading(false);
+    setisloading(index);
+    const response = await postretryFailed(payload);
+    setisloading(-1);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -162,10 +163,16 @@ const SalesOrderTable = ({ emptyLoading, data, setreload }) => {
                 <Td minWidth={100}>
                   {item?.sales_invoice_failed ? (
                     <Button
-                      isLoading={isloading}
+                      size="sm"
+                      isLoading={isloading === index ? true : false}
+                      disabled={isloading !== -1 ? true : false}
                       colorScheme="green"
                       onClick={() =>
-                        retryFailed("sale", item?.car_order?.magento_order_id)
+                        retryFailed(
+                          "sale",
+                          item?.car_order?.magento_order_id,
+                          index
+                        )
                       }
                     >
                       Retry

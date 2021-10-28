@@ -28,16 +28,16 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
-  const [isloading, setisloading] = useState(false);
-  const retryFailed = async (type, action, status, id) => {
+  const [isloading, setisloading] = useState({ loading: -1, type: "" });
+  const retryFailed = async (type, number, index, loading_type) => {
     let payload = {
       type: type,
-      action: action,
-      status: ReservationStatusKey(status),
+      batch: number,
+      action: loading_type,
     };
-    setisloading(true);
-    const response = await postretryFailed(payload, id);
-    setisloading(false);
+    setisloading({ loading: index, type: loading_type });
+    const response = await postretryFailed(payload);
+    setisloading({ loading: -1, type: loading_type });
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -55,13 +55,14 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
       if (response) {
         setJsonContent({
           type: type,
-          request: response.data[0].request,
-          response: response.data[0].response,
+          request: JSON.stringify(response.data[0].request),
+          response: JSON.stringify(response.data[0].response),
           request_timestamp: response.data[0].request_timestamp,
           response_timestamp: response.data[0].response_timestamp,
         });
         setisOpen(true);
       }
+      console.log(response);
     } catch (e) {
       toast({
         // title: "Failed to generate report",
@@ -85,6 +86,9 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
               <Tr key={`${index}`}>
                 <Td minWidth={100}>
                   <Text>{item?.id ?? "-"}</Text>
+                </Td>
+                <Td minWidth={100}>
+                  <Text>{item?.batch ?? "-"}</Text>
                 </Td>
                 <Td minWidth={200}>
                   <Text>
@@ -113,30 +117,62 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
                     View
                   </Badge>
                 </Td>
-                <Td minWidth={100}>
-                  <Text>{item?.failed ? "Failed" : "Success"}</Text>
-                </Td>
                 {/* <Td minWidth={100}>
-                  {item?.on_demand_failed ? (
+                  <Text>{item?.failed ? "Failed" : "Success"}</Text>
+                </Td> */}
+                <Td minWidth={200}>
+                  {item?.failed && (
                     <Button
-                      isLoading={isloading}
+                      mx="2px"
+                      my="2px"
+                      size="sm"
+                      isLoading={
+                        isloading.loading === index &&
+                        isloading.type === "sapSync"
+                          ? true
+                          : false
+                      }
+                      disabled={isloading.loading !== -1 ? true : false}
                       loadingText=""
                       colorScheme="green"
                       onClick={() =>
                         retryFailed(
-                          "ondemand",
-                          item?.reservation_type?.toUpperCase() ?? null,
-                          item?.reservation_status,
-                          item?.magento_order_id
+                          "onDemandArticleStock",
+                          item?.batch,
+                          index,
+                          "sapSync"
                         )
                       }
                     >
-                      Retry
+                      Retry sap sync
                     </Button>
-                  ) : (
-                    <Text>-</Text>
                   )}
-                </Td> */}
+                  {item?.magento_sync && (
+                    <Button
+                      size="sm"
+                      isLoading={
+                        isloading.loading === index &&
+                        isloading.type === "magentoSync"
+                          ? true
+                          : false
+                      }
+                      disabled={isloading.loading !== -1 ? true : false}
+                      loadingText=""
+                      colorScheme="twitter"
+                      onClick={() =>
+                        retryFailed(
+                          "onDemandArticleStock",
+                          item?.batch,
+                          index,
+                          "magentoSync"
+                        )
+                      }
+                    >
+                      Retry magento sync
+                    </Button>
+                  )}
+                  {!item?.failed && !item?.magento_sync && <Text>Nil</Text>}
+                </Td>
               </Tr>
             );
           })}
@@ -150,12 +186,11 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
             <ModalOverlay />
             <ModalContent>
               <ModalHeader textTransform="capitalize">
-                {JsonContent.type}
+                {JsonContent?.type}
               </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <Text>
-                  {" "}
                   <Flex fontSize="20px">
                     Request&nbsp;
                     <Flex color="red">
@@ -163,14 +198,13 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
                         dayjs(JsonContent?.request_timestamp)
                           .local()
                           .format("DD/MM/YY H:mm:ss A") ?? "-"
-                      }]`}{" "}
+                      }]`}
                     </Flex>
                   </Flex>
-                  {JsonContent.request}
+                  {JsonContent?.request}
                 </Text>
                 <Divider margin="20px 0px" />
                 <Text>
-                  {" "}
                   <Flex fontSize="20px">
                     Response&nbsp;
                     <Flex color="red">
@@ -178,10 +212,10 @@ const OnDemandTable = ({ emptyLoading, data, setreload }) => {
                         dayjs(JsonContent?.response_timestamp)
                           .local()
                           .format("DD/MM/YY H:mm:ss A") ?? "-"
-                      }]`}{" "}
+                      }]`}
                     </Flex>
                   </Flex>
-                  {JsonContent.response}
+                  {JsonContent?.response}
                 </Text>
               </ModalBody>
             </ModalContent>

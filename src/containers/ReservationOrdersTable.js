@@ -32,16 +32,17 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
-  const [isloading, setisloading] = useState(false);
-  const retryFailed = async (type, action, status, id) => {
+  const [isloading, setisloading] = useState(-1);
+  const retryFailed = async (type, action, status, id, index) => {
     let payload = {
+      salesOrderId: id,
       type: type,
       action: action,
       status: ReservationStatusKey(status),
     };
-    setisloading(true);
-    const response = await postretryFailed(payload, id);
-    setisloading(false);
+    setisloading(index);
+    const response = await postretryFailed(payload);
+    setisloading(-1);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -144,7 +145,9 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                 <Td minWidth={100}>
                   {item?.reservation_failed ? (
                     <Button
-                      isLoading={isloading}
+                      size="sm"
+                      isLoading={isloading === index ? true : false}
+                      disabled={isloading !== -1 ? true : false}
                       loadingText=""
                       colorScheme="green"
                       onClick={() =>
@@ -152,7 +155,8 @@ const ReservationOrderTable = ({ emptyLoading, data, setreload }) => {
                           "reservation",
                           item?.reservation_type?.toUpperCase() ?? null,
                           item?.car_order?.reservation_status,
-                          item?.car_order?.magento_order_id
+                          item?.car_order?.magento_order_id,
+                          index
                         )
                       }
                     >

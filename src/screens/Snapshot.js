@@ -71,7 +71,7 @@ function Snapshot(props) {
       // reservation_type: selectedTable === "" ? [] : [selectedTable],
       snapshot_stock_failed: Failed === "true" ? true : false,
       searchTerm: searchFilter,
-      store_id: selectedSite,
+      // store_id: selectedSite,
     };
     const response = await postsnapshotList(payload, startLimit, endLimit);
     if (response.status === 400 || response.orderCount === 0) {
@@ -132,7 +132,7 @@ function Snapshot(props) {
         </Badge>
       </Box>
       <Flex width={"100%"} wrap="wrap" justifyContent="space-between" my="10px">
-        <Select
+        {/* <Select
           variant="filled"
           placeholder={sites?.length ? "Select site" : "No sites found"}
           defaultValue={selectedSite}
@@ -154,7 +154,7 @@ function Snapshot(props) {
                 </option>
               ))
             : null}
-        </Select>
+        </Select> */}
         {/* <Select
           variant="filled"
           defaultValue="List All"

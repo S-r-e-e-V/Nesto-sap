@@ -28,16 +28,15 @@ const FinancialPostingTable = ({ emptyLoading, data, setreload }) => {
   const toast = useToast();
   const [JsonContent, setJsonContent] = useState({});
   const [isOpen, setisOpen] = useState(false);
-  const [isloading, setisloading] = useState(false);
-  const retryFailed = async (type, action, status, id) => {
+  const [isloading, setisloading] = useState(-1);
+  const retryFailed = async (type, number, index) => {
     let payload = {
       type: type,
-      action: action,
-      status: ReservationStatusKey(status),
+      sequenceNumber: number,
     };
-    setisloading(true);
-    const response = await postretryFailed(payload, id);
-    setisloading(false);
+    setisloading(index);
+    const response = await postretryFailed(payload);
+    setisloading(-1);
     if (response?.success === true) {
       setreload((reload) => !reload);
     }
@@ -131,23 +130,23 @@ const FinancialPostingTable = ({ emptyLoading, data, setreload }) => {
                     View
                   </Badge>
                 </Td>
-                <Td minWidth={100}>
+                {/* <Td minWidth={100}>
                   <Text>
                     {item?.financial_posting_failed ? "Failed" : "Success"}
                   </Text>
-                </Td>
-                {/* <Td minWidth={100}>
+                </Td> */}
+                <Td minWidth={100}>
                   {item?.financial_posting_failed ? (
                     <Button
-                      isLoading={isloading}
+                      isLoading={isloading === index ? true : false}
+                      disabled={isloading !== -1 ? true : false}
                       loadingText=""
                       colorScheme="green"
                       onClick={() =>
                         retryFailed(
-                          "finance",
-                          item?.reservation_type?.toUpperCase() ?? null,
-                          item?.reservation_status,
-                          item?.magento_order_id
+                          "financialPosting",
+                          item?.sequence_number,
+                          index
                         )
                       }
                     >
@@ -156,7 +155,7 @@ const FinancialPostingTable = ({ emptyLoading, data, setreload }) => {
                   ) : (
                     <Text>-</Text>
                   )}
-                </Td> */}
+                </Td>
               </Tr>
             );
           })}
